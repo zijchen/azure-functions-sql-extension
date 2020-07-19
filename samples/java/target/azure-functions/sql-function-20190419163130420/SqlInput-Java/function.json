@@ -1,0 +1,23 @@
+{
+  "scriptFile" : "../sql-function-1.0-SNAPSHOT.jar",
+  "entryPoint" : "com.sql.FunctionInput.input",
+  "bindings" : [ {
+    "type" : "httpTrigger",
+    "direction" : "in",
+    "name" : "req",
+    "methods" : [ "GET", "POST" ],
+    "authLevel" : "ANONYMOUS"
+  }, {
+    "type" : "sql",
+    "direction" : "in",
+    "name" : "sqlInput",
+    "commandType" : "Text",
+    "connectionStringSetting" : "SQLServerAuthentication",
+    "parameters" : "@Cost=100",
+    "command" : "select * from Products where cost = @Cost"
+  }, {
+    "type" : "http",
+    "direction" : "out",
+    "name" : "$return"
+  } ]
+}

@@ -7,6 +7,7 @@
     <Authors>Sophia Tevosyan</Authors>
     <Product>SQL Binding Extension</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -36,7 +36,7 @@ namespace Microsoft.Azure.WebJobs
         /// Specifies whether "Command" refers to a stored procedure or Sql query string. Use CommandType.StoredProcedure for the former,
         /// CommandType.Text for the latter
         /// </summary>
-        public CommandType Type { get; set; }
+        public CommandType CommandType { get; set; }
 
         /// <summary>
         /// Specifies the parameters that will be used to execute the Sql query or stored procedure specified in "Command". Must follow the format

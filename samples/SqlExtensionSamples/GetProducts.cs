@@ -12,20 +12,34 @@ namespace SqlExtensionSamples
     public class GetProducts
     {
 
-         /**
-         [FunctionName("GetProducts")]
-         public static IActionResult Run(
+        
+        [FunctionName("GetProducts")]
+        public static IActionResult Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "getproducts/{cost}")]
+            HttpRequest req,
+            [Sql("select * from Products where cost = @Cost",
+                CommandType = System.Data.CommandType.Text,
+                Parameters = "@Cost={cost}",
+                ConnectionStringSetting = "SQLServerAuthentication")]
+            string products)
+        {
+            return (ActionResult)new OkObjectResult(products);
+        }
+
+        /**
+        [FunctionName("GetProducts")]
+        public static IActionResult Run(
              [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "getproducts/{cost}")]
              HttpRequest req,
              [Sql("select * from Products where cost = @Cost",
                  Type = System.Data.CommandType.Text,
                  Parameters = "@Cost={cost}",
                  ConnectionStringSetting = "SQLServerAuthentication")]
-             IEnumerable<Product> products)
-         {
-             return (ActionResult)new OkObjectResult(products);
-         } **/
-        
+             string products)
+        {
+            return (ActionResult)new OkObjectResult(products);
+        } **/
+
 
         /**
         [FunctionName("GetProducts")]
@@ -41,7 +55,7 @@ namespace SqlExtensionSamples
             return (ActionResult)new OkObjectResult(products);
         } **/
 
-        
+        /**
         [FunctionName("GetProducts")]
         public static async Task<IActionResult> Run(
              [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "getproducts/{cost}")]
@@ -60,7 +74,7 @@ namespace SqlExtensionSamples
             }
             await enumerator.DisposeAsync();
             return (ActionResult)new OkObjectResult(list);
-        }
+        } **/
 
         /**
         [FunctionName("GetProducts")]

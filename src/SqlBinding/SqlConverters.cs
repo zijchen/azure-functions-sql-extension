@@ -35,7 +35,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
                 SqlCommand command = new SqlCommand(attribute.Command, _connection.GetConnection());
                 return command;
             }
-
         }
 
         public class SqlGenericsConverter<T> : IConverter<SqlAttribute, IEnumerable<T>>, IConverter<SqlAttribute, IAsyncEnumerable<T>>,
@@ -168,11 +167,11 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
             command.CommandText = attribute.Command;
-            if (attribute.Type == CommandType.StoredProcedure)
+            if (attribute.CommandType == CommandType.StoredProcedure)
             {
                 command.CommandType = CommandType.StoredProcedure;
             }
-            else if (attribute.Type != CommandType.Text)
+            else if (attribute.CommandType != CommandType.Text)
             {
                 throw new ArgumentException("The Type of the Sql attribute for an input binding must be either CommandType.Text for a plain text" +
                     "Sql query, or CommandType.StoredProcedure for a stored procedure.");
