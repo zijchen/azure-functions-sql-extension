@@ -8,7 +8,7 @@
     "methods" : [ "GET", "POST" ],
     "authLevel" : "ANONYMOUS"
   }, {
-    "type" : "sql",
+    "type" : "SqlBinding",
     "direction" : "in",
     "name" : "sqlInput",
     "commandType" : "Text",
