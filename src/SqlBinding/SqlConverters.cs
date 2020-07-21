@@ -54,6 +54,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
                 ParseParameters(attribute.Parameters, command);
                 return command;
             }
+
         }
 
         public class SqlGenericsConverter<T> : IConverter<SqlAttribute, IEnumerable<T>>, IConverter<SqlAttribute, IAsyncEnumerable<T>>,
@@ -183,11 +184,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
         {
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
-<<<<<<< HEAD
             command.CommandText = attribute.CommandText;
-=======
-            command.CommandText = attribute.Command;
->>>>>>> 1dbc57290856ec30eacdc3e5c9abe54b2ef91f45
             if (attribute.CommandType == CommandType.StoredProcedure)
             {
                 command.CommandType = CommandType.StoredProcedure;

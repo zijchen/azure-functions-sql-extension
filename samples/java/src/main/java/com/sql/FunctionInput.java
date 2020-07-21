@@ -12,11 +12,7 @@ public class FunctionInput {
     @FunctionName("SqlInput-Java")
     public HttpResponseMessage input(
             @HttpTrigger(name = "req", methods = {HttpMethod.GET, HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
-<<<<<<< HEAD
             @SqlInput(commandText = "select * from Products where cost = @Cost",
-=======
-            @SqlInput(command = "select * from Products where cost = @Cost",
->>>>>>> 1dbc57290856ec30eacdc3e5c9abe54b2ef91f45
             commandType = "Text",
             parameters = "@Cost=100",
             connectionStringSetting = "SQLServerAuthentication") Optional<Product> input,

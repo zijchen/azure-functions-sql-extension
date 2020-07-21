@@ -73,11 +73,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.microsoft.azure.functions</groupId>
-<<<<<<< HEAD
 				<artifactId>azure-functions-java-library-sql</artifactId>
-=======
-				<artifactId>azure-functions-java-library-SqlBinding</artifactId>
->>>>>>> 1dbc57290856ec30eacdc3e5c9abe54b2ef91f45
 				<version>1.0.1</version>
 			</dependency>
 		</dependencies>
@@ -90,11 +86,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.azure.functions</groupId>
-<<<<<<< HEAD
 			<artifactId>azure-functions-java-library-sql</artifactId>
-=======
-			<artifactId>azure-functions-java-library-SqlBinding</artifactId>
->>>>>>> 1dbc57290856ec30eacdc3e5c9abe54b2ef91f45
 		</dependency>
 
 		<!-- Test -->
