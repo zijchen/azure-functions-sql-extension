@@ -15,7 +15,7 @@ public class FunctionInput {
             @SqlInput(commandText = "select * from Products where cost = @Cost",
             commandType = "Text",
             parameters = "@Cost=100",
-            connectionStringSetting = "SQLServerAuthentication") Optional<Product> input,
+            connectionStringSetting = "SQLServerAuthentication") List<String> input,
             final ExecutionContext context) {
         context.getLogger().info("Java HTTP trigger processed a request.");
 
@@ -24,12 +24,12 @@ public class FunctionInput {
 
     public static class Product
     {
-        private int productID;
-        private String name;
-        private int cost;
+        private int ProductID;
+        private String Name;
+        private int Cost;
         
-        public int getProductID() { return this.productID; }
-        public String getName() { return this.name; }
-        public int getCost() { return this.cost; }
+        public int getProductID() { return this.ProductID; }
+        public String getName() { return this.Name; }
+        public int getCost() { return this.Cost; }
     }
 }

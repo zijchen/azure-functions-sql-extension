@@ -179,6 +179,7 @@
 									<includes>
 										<include>host.json</include>
 										<include>local.settings.json</include>
+										<include>function.deps.json</include>
 									</includes>
 								</resource>
 							</resources>
