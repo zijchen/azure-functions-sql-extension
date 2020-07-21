@@ -17,10 +17,17 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+<<<<<<< HEAD
 @CustomBinding(direction = "in", name = "sqlInput", type = "sql")
 public @interface SqlInput {
 
     String commandText();
+=======
+@CustomBinding(direction = "in", name = "sqlInput", type = "SqlBinding")
+public @interface SqlInput {
+
+    String command();
+>>>>>>> 1dbc57290856ec30eacdc3e5c9abe54b2ef91f45
 
     String commandType();
 
