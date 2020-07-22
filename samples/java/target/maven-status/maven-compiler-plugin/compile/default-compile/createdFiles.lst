@@ -1,2 +1,4 @@
 com\sql\FunctionInput$Product.class
+com\sql\FunctionOutput.class
 com\sql\FunctionInput.class
+com\sql\FunctionOutput$Product.class

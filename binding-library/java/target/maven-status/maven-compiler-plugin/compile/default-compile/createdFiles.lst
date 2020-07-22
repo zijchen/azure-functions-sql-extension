@@ -1,1 +1,2 @@
 com\microsoft\azure\functions\sql\annotation\SqlInput.class
+com\microsoft\azure\functions\sql\annotation\SqlOutput.class

@@ -4,22 +4,34 @@ import java.util.*;
 import com.microsoft.azure.functions.annotation.*;
 import com.microsoft.azure.functions.*;
 
-import com.microsoft.azure.functions.sql.annotation.SqlInput;
+import com.microsoft.azure.functions.sql.annotation.SqlOutput;
+
 
 import java.util.Optional;
 
-public class FunctionInput {
-    @FunctionName("SqlInput-Java")
-    public HttpResponseMessage input(
+public class FunctionOutput {
+    @FunctionName("SqlOutput-Java")
+    public HttpResponseMessage InsertRow(
             @HttpTrigger(name = "req", methods = {HttpMethod.GET, HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
-            @SqlInput(commandText = "select * from Products where cost = @Cost",
-            commandType = "Text",
-            parameters = "@Cost=100",
-            connectionStringSetting = "SQLServerAuthentication") List<String> input,
+            @SqlOutput(commandText = "Products",
+            //dataType = "binary",
+            connectionStringSetting = "SQLServerAuthentication") OutputBinding<List<Product>> output,
             final ExecutionContext context) {
         context.getLogger().info("Java HTTP trigger processed a request.");
 
-        return request.createResponseBuilder(HttpStatus.OK).body(input).build();
+    
+        output.setValue(new ArrayList<Product>());
+        Product product = new Product();
+        product.Cost = 100;
+        product.Name = "Lipstick";
+        product.ProductID = 11;
+        output.getValue().add(product);
+        product = new Product();
+        product.Cost = 100;
+        product.Name = "Lipstick";
+        product.ProductID = 9;
+        output.getValue().add(product);
+        return request.createResponseBuilder(HttpStatus.OK).body(product).build();
     }
 
     public static class Product

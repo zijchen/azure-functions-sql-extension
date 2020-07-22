@@ -69,8 +69,38 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
                 return Task.CompletedTask;
             }
 
-            string rows = JsonConvert.SerializeObject(_rows);
-            InsertRows(rows, _attribute.CommandText, _connection.GetConnection());
+            var stringRows = string.Empty;
+            if (typeof(T) == typeof(string))
+            {
+                stringRows = "[";
+                foreach (var row in _rows)
+                {
+                    stringRows += row;
+                    Console.WriteLine("we out here!!!!!!!!");
+                    Console.WriteLine(row);
+                }
+                stringRows += "]";
+                
+
+            } else if (typeof(T) == typeof(byte[]))
+            {
+                stringRows = "[";
+                for (int i = 0; i < _rows.Count - 1; i++)
+                {
+                    byte[] byteArray = _rows[i] as byte[];
+                    stringRows += System.Text.Encoding.UTF8.GetString(byteArray) + ",";
+                    Console.WriteLine("we out here!!!!!!!!");
+                    Console.WriteLine(stringRows);
+                }
+                byte[] lastRow = _rows[_rows.Count - 1] as byte[];
+                stringRows += System.Text.Encoding.UTF8.GetString(lastRow);
+                stringRows += "]";
+            } else
+            {
+                Console.WriteLine("type is: " + typeof(T));
+                stringRows = JsonConvert.SerializeObject(_rows);
+            }
+            InsertRows(stringRows, _attribute.CommandText, _connection.GetConnection());
             _rows.Clear();
             return Task.CompletedTask;
         }
@@ -85,29 +115,35 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
         /// already specified</param>
         private static async void InsertRows(string rows, string table, SqlConnection connection)
         {
-            DataTable dataTable = (DataTable)JsonConvert.DeserializeObject(rows, typeof(DataTable));
-            dataTable.TableName = table;
-            DataSet dataSet = new DataSet();
-            dataSet.Tables.Add(dataTable);
-            var dataAdapter = new SqlDataAdapter($"SELECT * FROM [{table}];", connection);
-            SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
-            // Manually opening the connection because a "using" statement disposes it afterwards. If a user invokes
-            // FlushAsync themselves within the function implementation, then FlushAsync and InsertRows is called
-            // multipled times. The invocations of FlushAsync following the first one will fail because the SqlConnection 
-            // has been disposed of
-            await connection.OpenAsync();
-            /** Keeping this here for now. Hesitant to do the other way of inserting because it takes a lot longer
-                * for more rows.
-                using (var bulk = new SqlBulkCopy(connection))
-                {
-                    bulk.DestinationTableName = table;
-                    bulk.WriteToServer(dataTable);
-                }
-            **/
-            // This creates a separate transaction for each row. It seems like the standard way to do wrap multiple
-            // row insertions in a transaction in C# is the bulk copy, but not sure.
-            dataAdapter.Update(dataSet, table);
-            connection.Close();
+            try
+            {
+                DataTable dataTable = (DataTable)JsonConvert.DeserializeObject(rows, typeof(DataTable));
+                dataTable.TableName = table;
+                DataSet dataSet = new DataSet();
+                dataSet.Tables.Add(dataTable);
+                var dataAdapter = new SqlDataAdapter($"SELECT * FROM [{table}];", connection);
+                SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
+                // Manually opening the connection because a "using" statement disposes it afterwards. If a user invokes
+                // FlushAsync themselves within the function implementation, then FlushAsync and InsertRows is called
+                // multipled times. The invocations of FlushAsync following the first one will fail because the SqlConnection 
+                // has been disposed of
+                await connection.OpenAsync();
+                /** Keeping this here for now. Hesitant to do the other way of inserting because it takes a lot longer
+                    * for more rows.
+                    using (var bulk = new SqlBulkCopy(connection))
+                    {
+                        bulk.DestinationTableName = table;
+                        bulk.WriteToServer(dataTable);
+                    }
+                **/
+                // This creates a separate transaction for each row. It seems like the standard way to do wrap multiple
+                // row insertions in a transaction in C# is the bulk copy, but not sure.
+                dataAdapter.Update(dataSet, table);
+                connection.Close();
+            } catch (Exception e)
+            {
+                throw new InvalidOperationException(String.Format("rows looks like: {0}, and exception message: {1}", rows, e.Message));
+            }
         }
     }
 }

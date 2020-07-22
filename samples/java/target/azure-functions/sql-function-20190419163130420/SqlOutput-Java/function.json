@@ -1,0 +1,21 @@
+{
+  "scriptFile" : "../sql-function-1.0-SNAPSHOT.jar",
+  "entryPoint" : "com.sql.FunctionOutput.InsertRow",
+  "bindings" : [ {
+    "type" : "httpTrigger",
+    "direction" : "in",
+    "name" : "req",
+    "methods" : [ "GET", "POST" ],
+    "authLevel" : "ANONYMOUS"
+  }, {
+    "type" : "sql",
+    "direction" : "out",
+    "name" : "sqlOutput",
+    "connectionStringSetting" : "SQLServerAuthentication",
+    "commandText" : "Products"
+  }, {
+    "type" : "http",
+    "direction" : "out",
+    "name" : "$return"
+  } ]
+}

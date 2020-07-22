@@ -12,6 +12,11 @@ namespace SqlExtensionSamples
 
             public int Cost { get; set; }
 
+            public virtual string toString()
+            {
+                return "{\"ProductID\":" + ProductID + ",\"Name\":" + "\"" + Name + "\"" + ",\"Cost\":" + Cost + "}";
+            }
+
         }
 
         public static List<Product> GetNewProducts(int num)
@@ -29,5 +34,7 @@ namespace SqlExtensionSamples
             }
             return products;
         }
+
+       
     }
 }

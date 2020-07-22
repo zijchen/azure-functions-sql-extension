@@ -19,7 +19,7 @@
 		<functionAppName>sql-function-20190419163130420</functionAppName>
 		<functionAppRegion>westus</functionAppRegion>
 		<stagingDirectory>${project.build.directory}/azure-functions/${functionAppName}</stagingDirectory>
-		<functionResourceGroup>java-functions-group</functionResourceGroup>
+		<functionResourceGroup>httpexamplesotev</functionResourceGroup>
 	</properties>
 
 	<repositories>
@@ -74,7 +74,7 @@
 			<dependency>
 				<groupId>com.microsoft.azure.functions</groupId>
 				<artifactId>azure-functions-java-library-sql</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.4</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -100,7 +100,13 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+	
+   <dependency>
+     <groupId>org.apache.commons</groupId>
+     <artifactId>commons-lang3</artifactId>
+     <version>3.9</version>
+   </dependency>
+ </dependencies>
 
 	<build>
 		<pluginManagement>
@@ -131,6 +137,7 @@
 					<resourceGroup>${functionResourceGroup}</resourceGroup>
 					<appName>${functionAppName}</appName>
 					<region>${functionAppRegion}</region>
+					<subscriptionID>9aed90ce-eb21-4ecf-bdb6-274e01b2cf18</subscriptionID>
 					<runtime>
 						<os>windows</os>
 					</runtime>

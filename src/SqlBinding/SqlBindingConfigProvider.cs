@@ -49,6 +49,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             rule.BindToInput<SqlCommand>(converter);
             rule.BindToInput<string>(typeof(SqlGenericsConverter<string>), _configuration);
             rule.BindToCollector<OpenType>(typeof(SqlAsyncCollectorBuilder<>), _configuration);
+            rule.BindToCollector<string>(typeof(SqlAsyncCollectorBuilder<string>), _configuration);
             rule.BindToInput<OpenType>(typeof(SqlGenericsConverter<>), _configuration);
         }
     }
