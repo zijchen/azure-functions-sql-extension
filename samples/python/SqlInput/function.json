@@ -1,0 +1,25 @@
+{
+      "scriptFile": "main.py",
+      "bindings": [
+        {
+          "type": "httpTrigger",
+          "direction" : "in",
+          "name" : "req",
+          "methods" : [ "GET", "POST" ],
+          "authLevel" : "ANONYMOUS"
+        }, 
+        {
+          "type" : "sql",
+          "direction" : "in",
+          "name" : "rows",
+          "commandType" : "Text",
+          "connectionStringSetting" : "SQLServerAuthentication",
+          "parameters" : "@Cost=100",
+          "commandText" : "select * from Products where cost = @Cost"
+        }, {
+          "type" : "http",
+          "direction" : "out",
+          "name" : "$return"
+        }
+    ]
+}
