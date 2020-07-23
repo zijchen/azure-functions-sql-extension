@@ -12,9 +12,10 @@
           "type" : "sql",
           "direction" : "in",
           "name" : "rows",
+          "dataType": "string",
           "commandType" : "Text",
           "connectionStringSetting" : "SQLServerAuthentication",
-          "parameters" : "@Cost=100",
+          "parameters" : "@Cost=10",
           "commandText" : "select * from Products where cost = @Cost"
         }, {
           "type" : "http",

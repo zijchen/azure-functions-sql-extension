@@ -1,5 +1,6 @@
 import json
-from typing import Any, List, Union, Optional
+from typing import Dict, Any, List, Union, Optional, Mapping
+import logging
 
 from azure.functions import meta
 
@@ -7,16 +8,9 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
                         binding='sql'):
 
     @classmethod
-    def check_input_type_annotation(cls, pytype: type) -> bool:
-        valid_types = (str, bytes)
-        return (
-            meta.is_iterable_type_annotation(pytype, valid_types)
-            or (isinstance(pytype, type) and issubclass(pytype, valid_types))
-        )
-
-    @classmethod
     def check_output_type_annotation(cls, pytype: type) -> bool:
         valid_types = (str, bytes)
+        logging.info("hi: check output")
         return (
             meta.is_iterable_type_annotation(pytype, valid_types)
             or (isinstance(pytype, type) and issubclass(pytype, valid_types))
@@ -26,6 +20,7 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
     def decode(
         cls, data: meta.Datum, *, trigger_metadata
     ) -> Union[bytes, List[bytes]]:
+        logging.info("hi: decode")
         data_type = data.type
 
         if data_type in ['string', 'bytes', 'json']:
@@ -69,6 +64,7 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
     def encode(cls, obj: Any, *,
                expected_type: Optional[type]
                ) -> meta.Datum:
+        logging.info("hi: encode")
         data = meta.Datum(type=None, value=None)
 
         if isinstance(obj, str):

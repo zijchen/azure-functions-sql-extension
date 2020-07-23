@@ -1,7 +1,8 @@
-import logging
-import azure.functions
+import azure.functions as func
+import typing
 
-def main(req: azure.functions.HttpRequest, row : azure.functions.Out[str]) -> str:
-    string_row = "{\"ProductID\":" + str(1) + ",\"Name\":" + "\"" + "Bottle" + "\"" + ",\"Cost\":" + str(10) + "}"
-    row.set(string_row)
-    return string_row
+def main(req: func.HttpRequest, rows: func.Out[str]) -> func.HttpResponse:
+    row_1 = "{\"ProductID\":" + str(1) + ",\"Name\":" + "\"" + "Bottle" + "\"" + ",\"Cost\":" + str(10) + "}"
+    row_2 = "{\"ProductID\":" + str(2) + ",\"Name\":" + "\"" + "Bottle" + "\"" + ",\"Cost\":" + str(10) + "}"
+    rows.set("[" + row_1 + "," + row_2 + "]")
+    return row_2

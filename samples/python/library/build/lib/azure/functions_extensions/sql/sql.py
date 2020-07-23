@@ -1,5 +1,6 @@
 import json
 from typing import Dict, Any, List, Union, Optional, Mapping
+import logging
 
 from azure.functions import meta
 
@@ -9,6 +10,7 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
     @classmethod
     def check_input_type_annotation(cls, pytype: type) -> bool:
         valid_types = (str, bytes)
+        logging.info("hi: check input")
         return (
             meta.is_iterable_type_annotation(pytype, valid_types)
             or (isinstance(pytype, type) and issubclass(pytype, valid_types))
@@ -17,15 +19,17 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
     @classmethod
     def check_output_type_annotation(cls, pytype: type) -> bool:
         valid_types = (str, bytes)
+        logging.info("hi: check output")
         return (
-            meta.is_iterable_type_annotation(pytype, str)
+            meta.is_iterable_type_annotation(pytype, valid_types)
             or (isinstance(pytype, type) and issubclass(pytype, valid_types))
         )
 
     @classmethod
     def decode(
         cls, data: meta.Datum, *, trigger_metadata
-    ) -> Union[_eventhub.EventHubEvent, List[_eventhub.EventHubEvent]]:
+    ) -> Union[bytes, List[bytes]]:
+        logging.info("hi: decode")
         data_type = data.type
 
         if data_type in ['string', 'bytes', 'json']:
@@ -69,6 +73,7 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
     def encode(cls, obj: Any, *,
                expected_type: Optional[type]
                ) -> meta.Datum:
+        logging.info("hi: encode")
         data = meta.Datum(type=None, value=None)
 
         if isinstance(obj, str):
@@ -79,5 +84,20 @@ class SqlConverter(meta.InConverter, meta.OutConverter,
 
         elif isinstance(obj, list):
             data = meta.Datum(type='json', value=json.dumps(obj))
+        
+        elif isinstance(obj, collections.abc.Iterable):
+            msgs: List[str] = []
+            for item in obj:
+                if isinstance(item, str):
+                    msgs.append(item)
+                else:
+                    raise NotImplementedError(
+                        'invalid data type in output '
+                        'queue message list: {}'.format(type(item)))
+
+            return meta.Datum(
+                type='json',
+                value=json.dumps(msgs)
+            )
 
         return data
