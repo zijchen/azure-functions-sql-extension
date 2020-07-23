@@ -1,0 +1,8 @@
+setup.py
+azure/functions_extensions/sql/__init__.py
+azure/functions_extensions/sql/sql.py
+azure_functions_sql_binding.egg-info/PKG-INFO
+azure_functions_sql_binding.egg-info/SOURCES.txt
+azure_functions_sql_binding.egg-info/dependency_links.txt
+azure_functions_sql_binding.egg-info/requires.txt
+azure_functions_sql_binding.egg-info/top_level.txt

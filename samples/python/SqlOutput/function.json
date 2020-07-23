@@ -1,0 +1,24 @@
+{
+    "scriptFile": "main.py",
+    "bindings": [
+      {
+        "type": "httpTrigger",
+        "direction" : "in",
+        "name" : "req",
+        "methods" : [ "GET", "POST" ],
+        "authLevel" : "ANONYMOUS"
+      }, 
+      {
+        "type" : "sql",
+        "direction" : "out",
+        "name" : "row",
+        "commandType" : "Text",
+        "connectionStringSetting" : "SQLServerAuthentication",
+        "commandText" : "Products"
+      }, {
+        "type" : "http",
+        "direction" : "out",
+        "name" : "$return"
+      }
+  ]
+}
