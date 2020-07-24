@@ -11,10 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.16" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Core" Version="3.0.16" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="3.0.2" />
 	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 	    <_Parameter1>SqlExtension.Tests</_Parameter1>
 	</AssemblyAttribute>

@@ -22,6 +22,7 @@ namespace Microsoft.Azure.WebJobs
         /// <param name="commandText">The text of the command</param>
         public SqlAttribute(string commandText)
         {
+            Buffered = false;
             CommandText = commandText ?? throw new ArgumentNullException(nameof(commandText));
         }
 
@@ -55,5 +56,13 @@ namespace Microsoft.Azure.WebJobs
         /// </summary>
         [AutoResolve]
         public string Parameters { get; set; }
+
+        /// <summary>
+        /// Specifies whether all rows should be read from the SQL table at once (in the case of an input binding), or if the reading
+        /// should be buffered. If the reading is buffered, a row is only read from the database once the user requests it (by calling
+        /// MoveNext on the IEnumerable returned as part of the input binding)
+        /// By default this is set to false
+        /// </summary>
+        public bool Buffered { get; set; }
     }
 }

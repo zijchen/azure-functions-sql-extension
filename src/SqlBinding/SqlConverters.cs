@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -39,10 +38,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             /// <returns>The SqlCommand</returns>
             public SqlCommand Convert(SqlAttribute attribute)
             {
-                var connection = SqlBindingUtilities.BuildConnection(attribute, _configuration);
-                SqlCommand command = new SqlCommand(attribute.CommandText, connection);
-                SqlBindingUtilities.ParseParameters(attribute.Parameters, command);
-                return command;
+                return SqlBindingUtilities.BuildCommand(attribute, SqlBindingUtilities.BuildConnection(attribute, _configuration));
             }
 
         }
@@ -73,8 +69,12 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             /// <returns>An IEnumerable containing the rows read from the user's database in the form of the user-defined POCO</returns>
             public IEnumerable<T> Convert(SqlAttribute attribute)
             {
-                string json = Task.Run<string>(() => BuildItemFromAttribute(attribute)).GetAwaiter().GetResult();
-                return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
+                using (var connection = SqlBindingUtilities.BuildConnection(attribute, _configuration))
+                {
+                    //https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
+                    //Does the ExecuteQuery method use "per-thread" state?
+                    return Task.Run<IEnumerable<T>>(() => SqlBindingUtilities.ExecuteQuery<T>(attribute, connection)).GetAwaiter().GetResult();
+                }
             }
 
             /// <summary>
@@ -90,32 +90,12 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             /// </returns>
             string IConverter<SqlAttribute, string>.Convert(SqlAttribute attribute)
             {
-                //https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
-                //Does the BuildItemFromAttribute method use "per-thread" state?
-                return Task.Run<string>(() => BuildItemFromAttribute(attribute)).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Extracts the <see cref="SqlAttribute.ConnectionStringSetting"/> in attribute and uses it to establish a connection
-            /// to the SQL database. (Must be virtual for mocking the method in unit tests)
-            /// </summary>
-            /// <param name="attribute">
-            /// The binding attribute that contains the name of the connection string app setting and query.
-            /// </param>
-            /// <returns></returns>
-            public virtual async Task<string> BuildItemFromAttribute(SqlAttribute attribute)
-            {
                 using (var connection = SqlBindingUtilities.BuildConnection(attribute, _configuration))
                 {
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
-                    {
-                        SqlCommand command = SqlBindingUtilities.BuildCommand(attribute, connection);
-                        adapter.SelectCommand = command;
-                        await connection.OpenAsync();
-                        DataTable dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-                        return JsonConvert.SerializeObject(dataTable);
-                    }
+                    //https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
+                    //Does the ExecuteQuery method use "per-thread" state?
+                    var rows = Task.Run<IEnumerable<dynamic>>(() => SqlBindingUtilities.ExecuteQuery<dynamic>(attribute, connection)).GetAwaiter().GetResult();
+                    return JsonConvert.SerializeObject(rows);
                 }
             }
 
