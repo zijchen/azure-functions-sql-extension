@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Microsoft.Azure.WebJobs.Extensions.Sql
 {
@@ -43,8 +44,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
 
         }
 
-        internal class SqlGenericsConverter<T> : IConverter<SqlAttribute, IEnumerable<T>>, IConverter<SqlAttribute, IAsyncEnumerable<T>>,
-            IConverter<SqlAttribute, string>
+        internal class SqlGenericsConverter<T> : IAsyncConverter<SqlAttribute, IEnumerable<T>>, IConverter<SqlAttribute, IAsyncEnumerable<T>>,
+            IAsyncConverter<SqlAttribute, string>
         {
             private IConfiguration _configuration;
 
@@ -67,13 +68,11 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             /// Contains the information necessary to establish a SqlConnection, and the query to be executed on the database
             /// </param>
             /// <returns>An IEnumerable containing the rows read from the user's database in the form of the user-defined POCO</returns>
-            public IEnumerable<T> Convert(SqlAttribute attribute)
+            public async Task<IEnumerable<T>> ConvertAsync(SqlAttribute attribute, CancellationToken cancellationToken)
             {
                 using (var connection = SqlBindingUtilities.BuildConnection(attribute, _configuration))
                 {
-                    //https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
-                    //Does the ExecuteQuery method use "per-thread" state?
-                    return Task.Run<IEnumerable<T>>(() => SqlBindingUtilities.ExecuteQuery<T>(attribute, connection)).GetAwaiter().GetResult();
+                    return await SqlBindingUtilities.ExecuteQuery<T>(attribute, connection);
                 }
             }
 
@@ -88,13 +87,11 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql
             /// then the returned JSON string could look like
             /// [{"productID":3,"name":"Bottle","cost":90},{"productID":5,"name":"Cup","cost":100}]
             /// </returns>
-            string IConverter<SqlAttribute, string>.Convert(SqlAttribute attribute)
+            async Task<string> IAsyncConverter<SqlAttribute, string>.ConvertAsync(SqlAttribute attribute, CancellationToken cancellationToken)
             {
                 using (var connection = SqlBindingUtilities.BuildConnection(attribute, _configuration))
                 {
-                    //https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development#the-thread-pool-hack
-                    //Does the ExecuteQuery method use "per-thread" state?
-                    var rows = Task.Run<IEnumerable<dynamic>>(() => SqlBindingUtilities.ExecuteQuery<dynamic>(attribute, connection)).GetAwaiter().GetResult();
+                    var rows = await SqlBindingUtilities.ExecuteQuery<dynamic>(attribute, connection);
                     return JsonConvert.SerializeObject(rows);
                 }
             }
